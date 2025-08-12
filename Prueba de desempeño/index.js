@@ -212,7 +212,7 @@ app.get('/report/pending-invoices', async (req, res) => {
 });
 
 
-// ---------------- Run server  ----------------
+// ---------------- Run server ----------------
 app.listen(3000, () => {
     console.log('🚀 served running in http://localhost:3000');
 });
