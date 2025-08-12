@@ -3,11 +3,11 @@ import { pool } from './db.js';
 async function testConnection() {
     try {
         const connection = await pool.getConnection();
-        console.log('✅ Conexión exitosa a la base de datos');
+        console.log('✅ Successful connection to the database');
         connection.release();
         process.exit(0); // Cerrar script
     } catch (error) {
-        console.error('❌ Error al conectar a la base de datos:', error.message);
+        console.error('❌ Error connecting to database:', error.message);
         process.exit(1);
     }
 }

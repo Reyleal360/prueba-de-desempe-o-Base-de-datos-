@@ -9,11 +9,11 @@ import { importFile } from './backend/import.js';
 
 const app = express();
 
-// Para usar __dirname con ES Modules
+// To use __dirname with ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Rutas
+// routes
 const uploadDir = path.join(__dirname, 'backend', 'upload');
 const publicDir = path.join(__dirname, 'public');
 console.log("📂 publicDir =", publicDir);
@@ -24,12 +24,12 @@ app.use(bodyParser.json());
 
 // ---------------- CSV Endpoints ----------------
 
-// Página principal
+// Home page
 app.get('/', (req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-// Listar CSV
+// List CSV
 app.get('/files', (req, res) => {
     fs.readdir(uploadDir, (err, files) => {
         if (err) return res.status(500).json({ error: 'Error reading file folder' });
@@ -39,7 +39,7 @@ app.get('/files', (req, res) => {
     });
 });
 
-// Ver CSV como JSON
+// View CSV as JSON
 app.get('/view/:file', (req, res) => {
     const filePath = path.join(uploadDir, req.params.file);
     if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found' });
@@ -52,7 +52,7 @@ app.get('/view/:file', (req, res) => {
         .on('error', error => res.status(500).json({ error: error.message }));
 });
 
-// Importar CSV a demanda
+// Import CSV on demand
 app.post('/import/:file', async (req, res) => {
     try {
         const stats = await importFile(req.params.file);
@@ -63,7 +63,7 @@ app.post('/import/:file', async (req, res) => {
     }
 });
 
-// Actualizar CSV
+// uptade CSV
 app.put('/update/:file', async (req, res) => {
     const filePath = path.join(uploadDir, req.params.file);
     if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found' });
@@ -86,7 +86,7 @@ app.put('/update/:file', async (req, res) => {
 
 // ---------------- CRUD Users ----------------
 
-// Listar todos
+// list all
 app.get('/users', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM users');
@@ -97,7 +97,7 @@ app.get('/users', async (req, res) => {
     }
 });
 
-// Obtener por ID
+// Get by ID
 app.get('/users/:id', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE Id_user = ?', [req.params.id]);
@@ -109,7 +109,7 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-// Crear
+// create 
 app.post('/users', async (req, res) => {
     const { users_name, Email } = req.body;
     if (!users_name || !Email) return res.status(400).json({ error: 'users_name and Email required' });
@@ -124,7 +124,7 @@ app.post('/users', async (req, res) => {
     }
 });
 
-// Actualizar
+// uptade 
 app.put('/users/:id', async (req, res) => {
     const { users_name, Email } = req.body;
     if (!users_name || !Email) return res.status(400).json({ error: 'users_name and Email required' });
@@ -140,7 +140,7 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 
-// Eliminar
+// delete 
 app.delete('/users/:id', async (req, res) => {
     try {
         const [result] = await pool.query('DELETE FROM users WHERE Id_user = ?', [req.params.id]);
@@ -156,8 +156,9 @@ app.delete('/users/:id', async (req, res) => {
 
 // ---------------- CRUD Transactions ----------------
 
-// Listar todas
-// 1️⃣ Total de transacciones por usuario
+
+// 1️⃣ Total transactions per user
+
 app.get('/report/transactions-by-user', async (req, res) => {
     try {
         const [rows] = await pool.query(`
@@ -174,7 +175,7 @@ app.get('/report/transactions-by-user', async (req, res) => {
     }
 });
 
-// 2️⃣ Total facturado por usuario
+// 2️⃣ Total billed per user
 app.get('/report/billed-amount-by-user', async (req, res) => {
     try {
         const [rows] = await pool.query(`
@@ -191,7 +192,10 @@ app.get('/report/billed-amount-by-user', async (req, res) => {
     }
 });
 
-// 3️⃣ Usuarios con facturas pendientes de pago
+
+
+// 3️⃣ Users with outstanding invoices
+
 app.get('/report/pending-invoices', async (req, res) => {
     try {
         const [rows] = await pool.query(`
@@ -208,7 +212,7 @@ app.get('/report/pending-invoices', async (req, res) => {
 });
 
 
-// ---------------- Iniciar servidor ----------------
+// ---------------- Run server  ----------------
 app.listen(3000, () => {
     console.log('🚀 served running in http://localhost:3000');
 });
