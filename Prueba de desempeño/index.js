@@ -4,7 +4,7 @@ import path from 'path';
 import csv from 'csv-parser';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
-import { pool } from './backend/db.js'; // <-- importa tu pool
+import { pool } from './backend/db.js'; 
 import { importFile } from './backend/import.js';
 
 const app = express();
