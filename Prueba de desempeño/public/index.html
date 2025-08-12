@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>Archivos CSV en el servidor</h1>
+
+    <label for="csvFile">Select file:</label>
+    <select id="csvFile"></select>
+    <button id="loadBtn">Carry</button>
+    <button id="saveBtn" style="display:none;">Save changes</button>
+    <button id="importBtn" style="display:none;">Import MySQL</button>
+
+    <h2>Contenido del archivo</h2>
+    <div id="preview"></div>
+
+    <script src="./js/dashboard.js"></script>
 </body>
 </html>

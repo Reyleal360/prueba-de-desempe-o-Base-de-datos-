@@ -1,0 +1,84 @@
+   body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        h1 {
+            color: #007BFF;
+        }
+
+        label, select, button {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        select, button {
+            padding: 5px 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        input {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            background-color: transparent;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: 2px solid #007BFF;
+            background-color: #eef5ff;
+        }
+
+        #saveBtn {
+            background-color: #28a745;
+        }
+
+        #saveBtn:hover {
+            background-color: #1e7e34;
+        }
+
+        #importBtn {
+            background-color: #6f42c1;
+        }
+
+        #importBtn:hover {
+            background-color: #59359d;
+        }
