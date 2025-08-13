@@ -23,65 +23,6 @@ app.use(express.static(publicDir));
 app.use(bodyParser.json());
 
 
-// Home page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
-});
-
-// List CSV
-app.get('/files', (req, res) => {
-    fs.readdir(uploadDir, (err, files) => {
-        if (err) return res.status(500).json({ error: 'Error reading file folder' });
-        const csvFiles = files.filter(file => file.toLowerCase().endsWith('.csv'));
-        if (csvFiles.length === 0) return res.status(404).json({ error: 'No CSV files found' });
-        res.json(csvFiles);
-    });
-});
-
-// View CSV as JSON
-app.get('/view/:file', (req, res) => {
-    const filePath = path.join(uploadDir, req.params.file);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found' });
-
-    const results = [];
-    fs.createReadStream(filePath)
-        .pipe(csv())
-        .on('data', data => results.push(data))
-        .on('end', () => res.json(results))
-        .on('error', error => res.status(500).json({ error: error.message }));
-});
-
-// Import CSV on demand
-app.post('/import/:file', async (req, res) => {
-    try {
-        const stats = await importFile(req.params.file);
-        if (!stats.found) return res.status(404).json({ error: 'File not found' });
-        return res.json({ message: 'Import executed', import: stats });
-    } catch (err) {
-        return res.status(500).json({ error: err.message || 'Error importing' });
-    }
-});
-
-// uptade CSV
-app.put('/update/:file', async (req, res) => {
-    const filePath = path.join(uploadDir, req.params.file);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found' });
-
-    const newData = req.body;
-    if (!Array.isArray(newData) || newData.length === 0) return res.status(400).json({ error: 'Invalid data' });
-
-    const headers = Object.keys(newData[0]);
-    const csvRows = [headers.join(',')];
-    newData.forEach(row => csvRows.push(headers.map(h => row[h]).join(',')));
-
-    try {
-        await fs.promises.writeFile(filePath, csvRows.join('\n'));
-        const stats = await importFile(req.params.file);
-        return res.json({ message: 'File updated and imported successfully', import: stats });
-    } catch (err) {
-        return res.status(500).json({ error: err.message || 'Error saving/importing file' });
-    }
-});
 
 // ---------------- CRUD Users ----------------
 
