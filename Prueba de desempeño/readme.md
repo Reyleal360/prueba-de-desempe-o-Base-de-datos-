@@ -53,22 +53,21 @@ public/
 ## 📥 Installation & Setup
 
 ## 1. Clone the repository:
-   git clone https://github.com/youruser/csv-project.git
+   git clone https://github.com/Reyleal360/prueba-de-desempe-o-Base-de-datos-/tree/main/Prueba%20de%20desempe%C3%B1o
    cd csv-project
 
 
 ##  Install dependencies:
 
 npm install express csv-parser
-Folder structure:
 
 
+## Folder structure:
 backend/upload/   # Place your CSV files here
 public/index.html # Frontend
-Place your .csv files in:
-
-
+## Place your .csv files in:
 backend/upload/
+
 ## Start the server:
 
 
