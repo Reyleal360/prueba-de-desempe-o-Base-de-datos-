@@ -22,7 +22,6 @@ console.log("📂 publicDir =", publicDir);
 app.use(express.static(publicDir));
 app.use(bodyParser.json());
 
-// ---------------- CSV Endpoints ----------------
 
 // Home page
 app.get('/', (req, res) => {
@@ -111,16 +110,41 @@ app.get('/users/:id', async (req, res) => {
 
 // create 
 app.post('/users', async (req, res) => {
-    const { users_name, Email } = req.body;
-    if (!users_name || !Email) return res.status(400).json({ error: 'users_name and Email required' });
+    try{
+    const { 
+    Id_user,
+    users_name,
+    Identification_Number,
+    Address,
+    Phone,
+    Email
+} = req.body
 
-    try {
-        const [result] = await pool.query('INSERT INTO users (users_name, Email) VALUES (?, ?)', [users_name, Email]);
-        res.status(201).json({ message: 'User created', id: result.insertId });
-    } catch (err) {
-        console.error(err);
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Email already exists' });
-        res.status(500).json({ error: 'Database error' });
+
+const query =`INSERT INTO users(Id_user,users_name,Identification_Number,Address,Phone,Email)
+     VALUES (?,?,?,?,?,?)`
+  
+const values= [
+    Id_user,
+    users_name,
+    Identification_Number,
+    Address,
+    Phone,
+    Email
+]
+
+    const [result] = await pool.query(query,values)
+
+    res.status(201).json({
+        mensage:"user was created"
+    })
+    }catch(error){
+        res.status(500).json({
+            status:'error',
+            endpoint: req.originalUrl,
+            method:req.method,
+            message:error.message
+        });
     }
 });
 
@@ -154,10 +178,9 @@ app.delete('/users/:id', async (req, res) => {
 
 
 
-// ---------------- CRUD Transactions ----------------
 
 
-// 1️⃣ Total transactions per user
+// Total transactions per user
 
 app.get('/report/transactions-by-user', async (req, res) => {
     try {
@@ -175,7 +198,7 @@ app.get('/report/transactions-by-user', async (req, res) => {
     }
 });
 
-// 2️⃣ Total billed per user
+// Total billed per user
 app.get('/report/billed-amount-by-user', async (req, res) => {
     try {
         const [rows] = await pool.query(`
@@ -194,7 +217,7 @@ app.get('/report/billed-amount-by-user', async (req, res) => {
 
 
 
-// 3️⃣ Users with outstanding invoices
+// Users with outstanding invoices
 
 app.get('/report/pending-invoices', async (req, res) => {
     try {
