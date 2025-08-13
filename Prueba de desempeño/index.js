@@ -23,6 +23,53 @@ app.use(express.static(publicDir));
 app.use(bodyParser.json());
 
 
+// ---------------- CSV Endpoints ----------------
+
+// Página principal
+app.get('/', (req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+// Listar CSV
+app.get('/files', (req, res) => {
+    fs.readdir(uploadDir, (err, files) => {
+        if (err) return res.status(500).json({ error: 'Error leyendo carpeta de archivos' });
+        const csvFiles = files.filter(file => file.toLowerCase().endsWith('.csv'));
+        if (csvFiles.length === 0) return res.status(404).json({ error: 'No se encontraron archivos CSV' });
+        res.json(csvFiles);
+    });
+});
+
+// Ver CSV como JSON
+app.get('/view/:file', (req, res) => {
+    const filePath = path.join(uploadDir, req.params.file);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Archivo no encontrado' });
+
+    const results = [];
+    fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', data => results.push(data))
+        .on('end', () => res.json(results))
+        .on('error', error => res.status(500).json({ error: error.message }));
+});
+
+// Actualizar CSV
+app.put('/update/:file', (req, res) => {
+    const filePath = path.join(uploadDir, req.params.file);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Archivo no encontrado' });
+
+    const newData = req.body;
+    if (!Array.isArray(newData) || newData.length === 0) return res.status(400).json({ error: 'Datos inválidos' });
+
+    const headers = Object.keys(newData[0]);
+    const csvRows = [headers.join(',')];
+    newData.forEach(row => csvRows.push(headers.map(h => row[h]).join(',')));
+
+    fs.writeFile(filePath, csvRows.join('\n'), err => {
+        if (err) return res.status(500).json({ error: 'Error al guardar archivo' });
+        res.json({ message: 'Archivo actualizado correctamente' });
+    });
+});
 
 // ---------------- CRUD Users ----------------
 
