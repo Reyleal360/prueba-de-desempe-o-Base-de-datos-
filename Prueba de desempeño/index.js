@@ -72,29 +72,19 @@ app.put('/update/:file', (req, res) => {
 });
 
 app.post('/import/:file', async (req, res) => {
-    try {
-        console.log(`🔄 Starting import of ${req.params.file}`);
-        const result = await importFile(req.params.file);
-        
-        if (!result.found) {
-            return res.status(404).json({ 
-                error: `File ${req.params.file} not found`,
-                import: result 
-            });
-        }
-
-        console.log(`✅ Import completed for ${req.params.file}:`, result);
-        res.json({ 
-            message: `Import completed for ${req.params.file}`,
-            import: result 
-        });
-    } catch (error) {
-        console.error(`❌ Error importing ${req.params.file}:`, error);
-        res.status(500).json({ 
-            error: `Error importing ${req.params.file}: ${error.message}`,
-            import: { file: req.params.file, found: false, inserted: 0, failed: 1 }
-        });
-    }
+ try {
+   const result = await importFile(req.params.file);
+   
+   if (!result.found) {
+     console.log(`❌ Import failed - file not found: ${req.params.file}`);
+     return res.status(404).json({ error: `File ${req.params.file} not found` });
+   }
+   
+   res.json({ message: `Import completed for ${req.params.file}`, import: result });
+ } catch (error) {
+   console.log(`❌ Import failed: ${error.message}`);
+   res.status(500).json({ error: `Error importing ${req.params.file}: ${error.message}` });
+ }
 });
 
 // ---------------- CRUD Users ----------------
